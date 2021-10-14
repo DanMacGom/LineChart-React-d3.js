@@ -1,25 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { format, scaleBand, scaleLinear, max } from "d3";
+import { useData } from "./useData";
+import { AxisBottom } from "./AxisBottom";
+import { AxisLeft } from "./AxisLeft";
+import { Marks } from "./Marks";
 
-function App() {
+const width = 960;
+const height = 500;
+const margin = { top: 20, right: 30, bottom: 65, left: 220 };
+const xAxisLabelOffset = 50;
+
+const App = () => {
+  const data = useData();
+
+  if (!data) {
+    return <pre>Loading...</pre>;
+  }
+
+  console.log(data[0]);
+
+  const innerHeight = height - margin.top - margin.bottom;
+  const innerWidth = width - margin.left - margin.right;
+
+  const yValue = (d) => {
+    return d.Country;
+  };
+  const xValue = (d) => {
+    return d.Population;
+  };
+
+  const siFormat = format(".2s");
+  const xAxisTickFormat = (tickValue) => siFormat(tickValue).replace("G", "B");
+
+  const yScale = scaleBand()
+    .domain(data.map(yValue))
+    .range([0, innerHeight])
+    .paddingInner(0.1);
+
+  const xScale = scaleLinear()
+    .domain([0, max(data, xValue)])
+    .range([0, innerWidth]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <svg width={width} height={height}>
+      <g transform={`translate(${margin.left}, ${margin.top})`}>
+        <AxisBottom
+          xScale={xScale}
+          innerHeight={innerHeight}
+          tickFormat={xAxisTickFormat}
+        />
+        <AxisLeft yScale={yScale} />
+        <text
+          className="axis-label"
+          x={innerWidth / 2}
+          textAnchor="middle"
+          y={innerHeight + xAxisLabelOffset}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          Population
+        </text>
+        {
+          <Marks
+            data={data}
+            xScale={xScale}
+            yScale={yScale}
+            xValue={xValue}
+            yValue={yValue}
+            tooltipFormat={xAxisTickFormat}
+          />
+        }
+      </g>
+    </svg>
   );
-}
+};
 
 export default App;
