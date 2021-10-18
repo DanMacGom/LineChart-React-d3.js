@@ -1,6 +1,11 @@
 import "./styles.css";
 
-export const AxisBottom = ({ xScale, innerHeight, tickFormat }) => {
+export const AxisBottom = ({
+  xScale,
+  innerHeight,
+  tickFormat,
+  tickOffset = 3,
+}) => {
   return xScale.ticks().map((tickValue) => (
     <g
       className="tick"
@@ -8,7 +13,11 @@ export const AxisBottom = ({ xScale, innerHeight, tickFormat }) => {
       transform={`translate(${xScale(tickValue)}, 0)`}
     >
       <line y2={innerHeight} />
-      <text style={{ textAnchor: "middle" }} y={innerHeight + 3} dy=".9em">
+      <text
+        style={{ textAnchor: "middle" }}
+        y={innerHeight + tickOffset}
+        dy=".9em"
+      >
         {tickFormat(tickValue)}
       </text>
     </g>

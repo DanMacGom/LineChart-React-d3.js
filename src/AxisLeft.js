@@ -1,15 +1,14 @@
 import "./styles.css";
 
-export const AxisLeft = ({ yScale }) => {
-  return yScale.domain().map((tickValue) => (
-    <g key={tickValue}>
-      <text
-        className="tick"
-        style={{ textAnchor: "end" }}
-        dx="-0.3em"
-        dy=".32em"
-        y={yScale(tickValue) + yScale.bandwidth() / 2}
-      >
+export const AxisLeft = ({ yScale, innerWidth, tickOffset = 3 }) => {
+  return yScale.ticks().map((tickValue) => (
+    <g
+      className="tick"
+      key={tickValue}
+      transform={`translate(0, ${yScale(tickValue)})`}
+    >
+      <line x2={innerWidth} />
+      <text style={{ textAnchor: "end" }} x={-tickOffset} dy=".32em">
         {tickValue}
       </text>
     </g>

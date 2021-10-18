@@ -5,17 +5,17 @@ export const Marks = ({
   xValue,
   yValue,
   tooltipFormat,
+  circleRadius,
 }) => {
-  return data.map((d) => (
-    <rect
+  return data.map((d, idx) => (
+    <circle
+      key={idx}
       className="mark"
-      key={yValue(d)}
-      x={0}
-      y={yScale(yValue(d))}
-      width={xScale(xValue(d))}
-      height={yScale.bandwidth()}
+      cx={xScale(xValue(d))}
+      cy={yScale(yValue(d))}
+      r={circleRadius}
     >
       <title>{tooltipFormat(xValue(d))}</title>
-    </rect>
+    </circle>
   ));
 };
