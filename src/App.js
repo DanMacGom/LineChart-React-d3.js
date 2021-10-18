@@ -1,5 +1,5 @@
 import React from "react";
-import { format, scaleLinear, extent } from "d3";
+import { timeFormat, scaleLinear, scaleTime, extent } from "d3";
 import { useData } from "./useData";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
@@ -21,23 +21,23 @@ const App = () => {
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
-  const xValue = (d) => d.sepal_length;
-  const xAxisLabel = "Sepal Length";
+  const xValue = (d) => d.timestamp;
+  const xAxisLabel = "Time";
 
-  const yValue = (d) => d.sepal_width;
-  const yAxisLabel = "Sepal Width";
+  const yValue = (d) => d.temperature;
+  const yAxisLabel = "Temperature";
 
-  const siFormat = format(".2s");
-  const xAxisTickFormat = (tickValue) => siFormat(tickValue).replace("G", "B");
+  const xAxisTickFormat = timeFormat("%a");
 
-  const xScale = scaleLinear()
+  const xScale = scaleTime()
     .domain(extent(data, xValue))
     .range([0, innerWidth])
     .nice(); // Makes sure that ending points are nice numbers.
 
   const yScale = scaleLinear()
     .domain(extent(data, yValue))
-    .range([0, innerHeight]);
+    .range([innerHeight, 0])
+    .nice();
 
   return (
     <svg width={width} height={height}>
@@ -74,7 +74,7 @@ const App = () => {
             xValue={xValue}
             yValue={yValue}
             tooltipFormat={xAxisTickFormat}
-            circleRadius={7}
+            circleRadius={4}
           />
         }
       </g>
